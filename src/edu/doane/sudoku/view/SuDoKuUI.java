@@ -84,4 +84,13 @@ public interface SuDoKuUI {
      * Display the modal "About Doane SuDoKu" dialog box.
      */
     void displayAbout();
+
+    /**
+     *
+     * Methods for pause function: Added the void hideGiven and resetColor for the pause function
+     */
+
+    void hideGiven(int row, int col, int number);
+
+    void resetColor(int row, int col, int number);
 }

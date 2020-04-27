@@ -47,6 +47,9 @@ public class ElapsedTime {
         seconds++;
         if (seconds == 60) {
             minutes++;
+
+            // This is where we set seconds to 0 to help change the speed of the timer
+            seconds = 0;
             if (minutes == 60) {
                 hours++;
                 minutes = 0;

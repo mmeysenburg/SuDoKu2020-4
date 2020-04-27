@@ -109,6 +109,14 @@ public class DesktopController implements SuDoKuController {
         }
     }
 
+    /**
+     * Added private boolean to check status of the game (used for fixing the edit after winning bug
+     *
+     */
+    public boolean isGameOver() {
+        return celebrated;
+    }
+
     @Override
     public void requestGame(String difficulty) {
         // pause timer
@@ -116,7 +124,7 @@ public class DesktopController implements SuDoKuController {
 
         // confirm new game desire
         if (view.confirmNewGame()) {
-            // move on to next game, reset celbration flag and timer
+            // move on to next game, reset celebration flag and timer
             setNextGame();
             celebrated = false;
             timer.resetTimer();
@@ -162,6 +170,48 @@ public class DesktopController implements SuDoKuController {
 
         // toggle the note in the view
         view.toggleNote(row, col, number);
+    }
+
+    /**
+     * Added pauseGame method for the pause function
+     */
+    public void pauseGame() {
+
+        timer.stopTimer();
+
+        // for loops are used to hide the values on the board when paused
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (grid.isGiven(i, j)) {
+                    view.hideGiven(i, j, grid.getNumber(i, j));
+                } else {
+                    if (grid.getNumber(i, j) != 0) {
+                        view.hideGiven(i, j, grid.getNumber(i, j));
+                    }
+                }
+            } // for j
+        } // for i
+    }
+
+    /**
+     * Created resumeGame method to reverse when the game is paused
+     */
+    public void resumeGame()
+    {
+        timer.startTimer();
+
+        // for loops to help the values appear after pause is unpaused
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (grid.isGiven(i, j)) {
+                    view.setGiven(i, j, grid.getNumber(i, j));
+                } else {
+                    if (grid.getNumber(i, j) != 0) {
+                        view.resetColor(i, j, grid.getNumber(i, j));
+                    }
+                }
+            }
+        }
     }
 
     @Override

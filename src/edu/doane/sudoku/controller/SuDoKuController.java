@@ -53,6 +53,16 @@ public interface SuDoKuController {
     void displayAbout();
 
     /**
+     * Pauses the game
+     */
+    void pauseGame();
+
+    /**
+     * Continues the game
+     */
+    void resumeGame();
+
+    /**
      * Remove everything from the view grid.
      */
     void clearViewGrid();
@@ -62,4 +72,9 @@ public interface SuDoKuController {
      * model and view grids.
      */
     void resetGrids();
+
+    /**
+     * Checks if game has been won
+     */
+    boolean isGameOver();
 }

@@ -4,6 +4,7 @@ import edu.doane.sudoku.controller.DesktopController;
 import edu.doane.sudoku.controller.DesktopTimer;
 import edu.doane.sudoku.controller.SuDoKuController;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -11,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.util.Optional;
 
@@ -81,6 +83,21 @@ public class SuDoKu extends Application implements SuDoKuUI {
 
         // configure key events
         scene.setOnKeyPressed(new UIKeyHandler(cells, controller, statusBar));
+
+        /**
+         * Chunk of code implemented to prompt the user with an alert box asking if the user really wants to leave the game
+         */
+        Platform.setImplicitExit(false);
+
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                event.consume();
+                if (confirmExit() == true) {
+                    Platform.exit();
+                }
+            }
+        });
     }
 
     /**
@@ -139,8 +156,8 @@ public class SuDoKu extends Application implements SuDoKuUI {
      * Create menu bar, menus, and menu items
      */
     private void configureMenus() {
-        Menu mnuGame, mnuHelp;
-        MenuItem mtmNewGame, mtmClearGrid , mtmExit, mtmAbout;
+        Menu mnuGame, mnuHelp, mnuTheme;
+        MenuItem mtmNewGame, mtmClearGrid , mtmExit, mtmAbout, mtmRed, mtmBlue; // Addition #3 - How to change the background color
 
         mnuGame = new Menu("_Game");
         mtmNewGame = new MenuItem("_New game");
@@ -171,7 +188,7 @@ public class SuDoKu extends Application implements SuDoKuUI {
                 new SeparatorMenuItem(), mtmExit);
 
         mnuHelp = new Menu("_Help");
-        mtmAbout = new MenuItem("_About");
+        mtmAbout = new MenuItem("How to Play the Game");
         mtmAbout.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -181,7 +198,44 @@ public class SuDoKu extends Application implements SuDoKuUI {
 
         mnuHelp.getItems().addAll(mtmAbout);
 
-        mnuBar = new MenuBar(mnuGame, mnuHelp);
+        /**
+         * New additions to the game: There is a brand new tab that drops down to the user TWO new colored themes: Red and Blue
+         */
+
+        // creating a new menu option called 'Colored Themes'
+        mnuTheme = new Menu("Colored Themes");
+
+        // menu option: Red
+        mtmRed = new MenuItem ("Red");
+        mtmRed.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                for (int row = 0; row < 9; row++) {
+                    for (int col = 0; col < 9; col++) {
+                        cells[row][col].setRedMode();
+                    }
+                }
+            }
+        });
+
+        // menu option: Blue
+        mtmBlue = new MenuItem("Blue");
+        mtmBlue.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                for (int row = 0; row < 9; row++) {
+                    for (int col = 0; col < 9; col++) {
+                        cells[row][col].setBlueMode();
+                    }
+                }
+            }
+        });
+
+    // gets the new menu options, Red and Blue
+    mnuTheme.getItems().addAll(mtmRed, mtmBlue);
+
+    // Added mnuTheme in parameters
+    mnuBar = new MenuBar(mnuGame, mnuHelp, mnuTheme);
     }
 
     /**
@@ -261,6 +315,64 @@ public class SuDoKu extends Application implements SuDoKuUI {
 
         cells[row][col].setGiven(n);
     }
+
+    /**
+     * Added methods hideGiven and resetColor for the pause function
+     */
+    @Override
+    public void hideGiven(int row, int col, int number) {
+        char n = '0';
+        switch(number) {
+            case 1:
+                n = '1'; break;
+            case 2:
+                n = '2'; break;
+            case 3:
+                n = '3'; break;
+            case 4:
+                n = '4'; break;
+            case 5:
+                n = '5'; break;
+            case 6:
+                n = '6'; break;
+            case 7:
+                n = '7'; break;
+            case 8:
+                n = '8'; break;
+            case 9:
+                n = '9'; break;
+        }
+
+        cells[row][col].throwProvided(n);
+    }
+
+
+    public void resetColor(int row, int col, int number) {
+        char n = '0';
+        switch(number) {
+            case 1:
+                n = '1'; break;
+            case 2:
+                n = '2'; break;
+            case 3:
+                n = '3'; break;
+            case 4:
+                n = '4'; break;
+            case 5:
+                n = '5'; break;
+            case 6:
+                n = '6'; break;
+            case 7:
+                n = '7'; break;
+            case 8:
+                n = '8'; break;
+            case 9:
+                n = '9'; break;
+        }
+
+        cells[row][col].resetTheme(n);
+    }
+
 
     /**
      * Set a number at the specified location.
@@ -381,14 +493,25 @@ public class SuDoKu extends Application implements SuDoKuUI {
     }
 
     /**
-     * Display the modal "About Doane SuDoKu" dialog box.
+     * Display the modal "About Doane SuDoKu" dialog box. Also added coordinates for the alert box and added how to play the game
      */
     @Override
     public void displayAbout() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("About Doane SuDoKu");
+        alert.setTitle("How to Play Doane SuDoKu");
         alert.setHeaderText(null);
-        alert.setContentText("Doane SuDoku\nCopyright " +
+
+        // sets coordinates of the alert box
+        alert.setY(0);
+        alert.setX(0);
+
+        // sets alert box's height
+        alert.setHeight(1000);
+
+        // added directions to play the game in the alert box
+        alert.setContentText("Use the numbers 1-9 to fill in the blanks. There are 9 quadrants in this game. Each one needs to contain the numbers 1-9 only once. " +
+                "However, each row and column also needs the values 1-9 once. Once each blank is filled in properly, you win the game." +
+                "\nDoane SuDoku\nCopyright " +
                 "\u00A9" + "2016, 2020");
         
         alert.showAndWait();

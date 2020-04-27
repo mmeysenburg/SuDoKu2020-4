@@ -3,6 +3,10 @@ package edu.doane.sudoku.view;
 import edu.doane.sudoku.controller.SuDoKuController;
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.paint.Color;
+
+import javax.swing.*;
 
 /**
  * Class to handle keyboard input in the desktop SuDoKu game.
@@ -15,7 +19,6 @@ public class UIKeyHandler implements EventHandler<KeyEvent> {
      * Flag telling if we're in note entry mode or not.
      */
     private boolean notesMode;
-
     /**
      * Reference to the cells in the user interface.
      */
@@ -25,6 +28,11 @@ public class UIKeyHandler implements EventHandler<KeyEvent> {
      * Reference to the status bar.
      */
     private final UIStatusBar pnlStatusBar;
+
+    /**
+     * Reference to the pause functionality
+     */
+    private static boolean pausedMode;
 
     /**
      * Reference to the controller used by the app.
@@ -43,6 +51,9 @@ public class UIKeyHandler implements EventHandler<KeyEvent> {
         this.controller = controller;
         notesMode = false;
         this.pnlStatusBar = pnlStatusBar;
+
+        // set pauseMode to false initially
+        pausedMode = false;
     }
 
     @Override
@@ -50,39 +61,53 @@ public class UIKeyHandler implements EventHandler<KeyEvent> {
         // get the character typed
         char c = event.getCode().getChar().charAt(0);
 
-        // and handle the input
-        switch (c) {
-            // n toggles notes mode
-            case 'n':
-            case 'N':
-                notesMode = !notesMode;
-                setNotesOrNormal();
+        // prevents the user from inserting anything after winning the game
+        if(!controller.isGameOver()) {
 
-                break;
-            // 1 - 9 sets number or note
-            case '1':
-            case '2':
-            case '3':
-            case '4':
-            case '5':
-            case '6':
-            case '7':
-            case '8':
-            case '9':
-                if (notesMode) {
-                    setNote(c);
-                } else {
-                    setNumber(c);
-                }
-                break;
+            // and handle the input
+            switch (c) {
+                // n toggles notes mode
+                case 'n':
+                case 'N':
+                    notesMode = !notesMode;
+                    setNotesOrNormal();
 
-            // space clears number from cell
-            case ' ':
-                if (!notesMode) {
-                    setNumber(' ');
-                }
-                break;
+                    break;
+
+                // created cases for the pause button
+                case 'p':
+                case 'P':
+                    pausedMode = !pausedMode;
+                    setPausedMode();
+
+                    break;
+
+                // 1 - 9 sets number or note
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                    if (notesMode) {
+                        setNote(c);
+                    } else {
+                        setNumber(c);
+                    }
+                    break;
+
+                // space clears number from cell
+                case ' ':
+                    if (!notesMode) {
+                        setNumber(' ');
+                    }
+                    break;
+            }
         }
+
     }
 
     /**
@@ -125,6 +150,21 @@ public class UIKeyHandler implements EventHandler<KeyEvent> {
             pnlStatusBar.setNormalMode();
         }
     }
+
+    /**
+     * Checks to see if the controller is able to edit depending on pause status
+     */
+    public void setPausedMode() {
+
+        if (pausedMode) {
+            controller.pauseGame();
+        } else {
+            controller.resumeGame();
+        }
+    }
+
+
+
     /**
      * Cause a number to be set in the selected cell.
      *

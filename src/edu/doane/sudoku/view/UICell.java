@@ -158,6 +158,59 @@ public class UICell extends BorderPane implements EventHandler<MouseEvent> {
     }
 
     /**
+     * Change Blue Theme
+     */
+    public void setRedMode() {
+        normalBackground = new Background(
+                new BackgroundFill(Color.LIGHTCORAL, null, null));
+
+        selectedBackground = new Background(
+                new BackgroundFill(Color.RED, null, null));
+
+        notesBackground = new Background(
+                new BackgroundFill(Color.WHITE, null, null));
+
+        background = normalBackground;
+        setBackground(background);
+    }
+
+    /**
+     * Change Red Theme
+     */
+    public void setBlueMode() {
+        normalBackground = new Background(
+                new BackgroundFill(Color.LIGHTBLUE, null, null));
+
+        selectedBackground = new Background(
+                new BackgroundFill(Color.BLUE, null, null));
+
+        notesBackground = new Background(
+                new BackgroundFill(Color.WHITE, null, null));
+
+        background = normalBackground;
+        setBackground(background);
+    }
+
+    /**
+     *
+     * Methods for the pause functionality
+     */
+
+    public void resetTheme(char number) {
+        isGiven = false;
+        num = Character.toString(number);
+        lblNumber.setTextFill(Color.BLUE);
+        lblNumber.setText(num);
+    }
+
+    public void throwProvided(char number) {
+        isGiven = true;
+        num = Character.toString(number);
+        lblNumber.setTextFill(Color.TRANSPARENT);
+        lblNumber.setText(num);
+    }
+
+    /**
      * Is this cell selected? I.e., is the mouse pointer over the cell?
      *
      * @return True if the cell is selected, false otherwise.
@@ -221,6 +274,9 @@ public class UICell extends BorderPane implements EventHandler<MouseEvent> {
     public void clearAllNotes() {
         for(int i = 0; i < notes.length; i++) {
             notes[i] = false;
+
+            // Deletes the notes when 'clear game' is clicked
+            lblNotes[i].setVisible(false);
         }
     }
 

@@ -25,7 +25,6 @@ public class UIBlock extends GridPane {
         row2 = new RowConstraints(); row2.setPercentHeight(33.33);
         row3 = new RowConstraints(); row3.setPercentHeight(33.33);
         getRowConstraints().addAll(row1, row2, row3);
-
         setBackground(new Background(new BackgroundFill(
                 Color.DARKSLATEGRAY, null, null)));
         setHgap(2);

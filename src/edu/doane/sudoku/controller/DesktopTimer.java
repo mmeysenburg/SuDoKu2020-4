@@ -36,8 +36,8 @@ public class DesktopTimer implements SuDoKuTimer {
      */
     public DesktopTimer() {
         elapsedTime = new ElapsedTime();
-
-        timeline = new Timeline(new KeyFrame(Duration.millis(100), new EventHandler<ActionEvent>() {
+        // BUG FIX #2 - Milliseconds were at 100 which is 1/10 of the duration making it faster than it should be
+        timeline = new Timeline(new KeyFrame(Duration.millis(1000), new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 elapsedTime.tick();
